@@ -49,24 +49,23 @@ database = "freedb_GGSui8CO"
 # ============================================================
 
 
-def get_db_config() -> Dict[str, str]:
-    """Ambil konfigurasi database dari Streamlit Secrets atau environment variables."""
+def get_db_config():
     try:
-        mysql_secret = st.secrets["mysql"]
         return {
-            "host": mysql_secret.get("host", ""),
-            "user": mysql_secret.get("user", ""),
-            "password": mysql_secret.get("password", ""),
-            "database": mysql_secret.get("database", ""),
+            "host": st.secrets["mysql"]["host"],
+            "port": int(st.secrets["mysql"].get("port", 3306)),
+            "user": st.secrets["mysql"]["user"],
+            "password": st.secrets["mysql"]["password"],
+            "database": st.secrets["mysql"]["database"],
         }
     except Exception:
         return {
             "host": os.getenv("DB_HOST", ""),
+            "port": int(os.getenv("DB_PORT", 3306)),
             "user": os.getenv("DB_USER", ""),
             "password": os.getenv("DB_PASSWORD", ""),
             "database": os.getenv("DB_NAME", ""),
         }
-
 
 class Database:
     """Wrapper database agar query lama tetap bisa memakai tanda tanya sebagai placeholder."""
